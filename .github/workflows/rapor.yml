@@ -1,0 +1,44 @@
+name: Nehir Debi Gunluk Rapor
+
+on:
+  schedule:
+    - cron: '5 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  rapor-olustur:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bagimlilik yukle
+        run: pip install -r requirements.txt
+
+      - name: Raporu olustur
+        run: python scraper.py
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+
+      - name: output klasorune .nojekyll ekle
+        run: touch output/.nojekyll
+
+      - name: GitHub Pages deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'Auto: Debi raporu guncellendi'
