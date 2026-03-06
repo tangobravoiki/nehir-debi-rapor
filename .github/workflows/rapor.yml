@@ -27,15 +27,47 @@ jobs:
 
       - name: Raporu olustur
         run: python scraper.py
+                continue-on-error: true
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
 
+                - name: output klasoru olustur ve fallback HTML ekle
+        run: |
+          mkdir -p output
+          if [ ! -f output/index.html ]; then
+            cat > output/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="tr">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>DSİ Nehir Debi Raporu</title>
+            <style>
+              body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; text-align: center; }
+              .error { background: #ffebee; border: 1px solid #f44336; padding: 20px; border-radius: 5px; }
+            </style>
+          </head>
+          <body>
+            <h1>🌊 DSİ Nehir Debi Raporu</h1>
+            <div class="error">
+              <h2>⚠️ Veri Çekilemedi</h2>
+              <p>DSİ sitesinden veri çekilirken bir hata oluştu.</p>
+              <p>Lütfen daha sonra tekrar deneyiniz.</p>
+              <p><small>Son güncelleme: $(date)</small></p>
+            </div>
+          </body>
+          </html>
+          EOF
+          fi
+
       - name: output klasorune .nojekyll ekle
         run: touch output/.nojekyll
+                continue-on-error: true
 
       - name: GitHub Pages deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output
+
