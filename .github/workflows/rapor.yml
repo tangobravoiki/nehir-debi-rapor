@@ -27,8 +27,7 @@ jobs:
 
       - name: Raporu olustur
         run: python scraper.py
-                continue-on-error: true
-        env:
+              continue-on-error: true
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
 
