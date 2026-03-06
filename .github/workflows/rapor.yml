@@ -30,7 +30,7 @@ jobs:
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-                - name: output klasoru olustur ve fallback HTML ekle
+    - name: output klasoru olustur ve fallback HTML ekle
         run: |
           mkdir -p output
           if [ ! -f output/index.html ]; then
@@ -66,5 +66,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output
+
 
 
